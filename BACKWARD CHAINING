@@ -1,0 +1,30 @@
+def backward_chaining(goal, facts, rules, indent=0):
+    print("  " * indent + f"Trying to prove: {goal}")
+    
+    if goal in facts:
+        print("  " * indent + f"{goal} is a known fact.")
+        return True
+    
+    for rule in rules:
+        conditions, conclusion = rule
+        if conclusion == goal:
+            print("  " * indent + f"Found rule: IF {conditions} THEN {conclusion}")
+            if all(backward_chaining(cond, facts, rules, indent + 1) for cond in conditions):
+                print("  " * indent + f"{goal} can be inferred.")
+                return True
+
+    print("  " * indent + f"{goal} cannot be proven.")
+    return False
+
+# Example usage:
+facts = {"A", "B"}
+rules = [
+    (["A", "B"], "C"),
+    (["C"], "D"),
+    (["D", "E"], "F"),
+    (["B"], "E")
+]
+
+goal = "F"
+result = backward_chaining(goal, facts, rules)
+print(f"\nGoal {goal} is {'provable' if result else 'not provable'}")
